@@ -17,7 +17,10 @@ router.get('/:id', async (req, res) => {
   //   // find one category by its `id` value
   //   // be sure to include its associated Products
   try {
-    const findOneData = await Category.findOne({where: {id: req.params.id},include:{ Product }
+    const findOneData = await Category.findOne({
+      where: { id: req.params.id }, include: [{
+        model: Product
+      }]
     });
 
     if (!findOneData) {
@@ -31,16 +34,42 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   // create a new category
+  try {
+    const createData = await Category.create({
+      category_name: req.body.Category_name
+    });
+    res.status(200).json(createData);
+  } catch (err) {
+    res.status(400).json(err);
+  }
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
   // update a category by its `id` value
+  const updatedData = await Category.update(
+    {
+      category_name: req.body.category_name,
+    },
+    {
+      where: {
+        id: req.params.id,
+      },
+    }
+  );
+  res.json(updatedData);
 });
 
 router.delete('/:id', (req, res) => {
   // delete a category by its `id` value
+  const deleteData = await Category.destroy({
+    where: {
+      id: req.params.id,
+    },
+  });
+  
+  res.json(deleteData);
 });
 
 module.exports = router;
