@@ -28,14 +28,14 @@ router.get('/:id',(req, res) => {
       },
     ],
   })
-    .then((dbTagData) => {
-      if (!dbTagData) {
+    .then((Data) => {
+      if (!Data) {
         res
           .status(404)
           .json({ message: "There was no tag found with this id." });
         return;
       }
-      res.json(dbTagData);
+      res.json(Data);
     })
     .catch((err) => {
       console.log(err);
