@@ -17,15 +17,27 @@ router.get('/',async (req, res) => {
 router.get('/:id',(req, res) => {
   Tag.findOne({
     where: {
-      id: req.params.id
+      id: req.params.id,
     },
-    include: {
-      model: Product,
-      attributes: ['product_name', 'price', 'stock', 'category_id']
-    }
+    include: [
+      {
+        model: Product,
+        attributes: ["id", "product_name", "price", "stock", "category_id"],
+        through: ProductTag,
+        as: "products",
+      },
+    ],
   })
-    .then(dbTagData => res.json(dbTagData))
-    .catch(err => {
+    .then((dbTagData) => {
+      if (!dbTagData) {
+        res
+          .status(404)
+          .json({ message: "There was no tag found with this id." });
+        return;
+      }
+      res.json(dbTagData);
+    })
+    .catch((err) => {
       console.log(err);
       res.status(500).json(err);
     });
